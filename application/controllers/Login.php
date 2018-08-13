@@ -121,9 +121,9 @@ class Login extends CI_Controller {
 
 		} catch (Exception $e) {
 			MessageParser::set('error', 'Login Gagal, '.$e->getMessage());
+            header("Refresh:0");
 		}
 
-//		header("Refresh:0");
 	}
 	function autologin() {
 		redirect($this->config->item('url_api').'autologin');
