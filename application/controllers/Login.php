@@ -100,13 +100,13 @@ class Login extends CI_Controller {
 
             $user = false;
             switch (true) {
-                case 1 :
+                case !$user :
                     $user = $this->getFromTable($username, $password, "karyawan");
                     if ($user) break;
-                case 2 :
+                case !$user :
                     $user = $this->getFromTable($username, $password, "dosen");
                     if ($user) break;
-                case 3 :
+                case !$user :
                     $user = $this->getFromTable($username, $password, "mhsw", 1);
                     if ($user) break;
             }
