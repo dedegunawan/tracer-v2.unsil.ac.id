@@ -68,21 +68,24 @@ class Login extends CI_Controller {
 
 	function getFromTable($username, $password, $tableType='karyawan', $throwError=0) {
 	    $userObject = $this->getDatabaseLogin()->where('Login', $username)->get($tableType)->row_array();
+
 	    if (!$userObject && $throwError) throw new Exception("User tidak ditemukan");
+
 
 	    $passwordScheme = @$userObject['PasswordScheme'];
 	    if (!$passwordScheme) $passwordScheme = "MD5";
 	    if ($passwordScheme == "MD5") {
-	        $same = @$userObject['Password'] == $password;
+	        $same = @$userObject['Password'] == md5($password);
         } elseif ($passwordScheme == "BCRYPT") {
 	        $same = password_verify($password, @$userObject['Password']);
         } else {
 	        $same = false;
         }
 
+
         if (!$same && $throwError)  throw new Exception("Password salah");
 
-	    return $userObject;
+	    return $same ? $userObject : false;
     }
 	function _doProsesLogin() {
 		try {
@@ -107,6 +110,8 @@ class Login extends CI_Controller {
                     $user = $this->getFromTable($username, $password, "mhsw", 1);
                     if ($user) break;
             }
+
+            if (!$user) throw new Exception("User tidak ditemukan");
 
             $userInfo = $user;
 
